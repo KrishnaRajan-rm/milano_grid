@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "telecom-noc": {
+      "command": "python",
+      "args": [
+        "C:\\GraddedAssignment\\cp\\cp12_mcp_server.py"
+      ],
+      "env": {
+        "NOC_API_BASE_URL": "http://127.0.0.1:8000"
+      }
+    }
+  }
+}

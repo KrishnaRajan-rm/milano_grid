@@ -1,0 +1,23 @@
+{
+  "name": "team-noc-ops-plugin",
+  "version": "0.1.0",
+  "description": "Team plugin packaging the NOC project rules, safeguards, commands and approved MCP configuration.",
+  "author": {
+    "name": "Telecom NOC Analytics Team"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Team NOC Ops Plugin",
+    "shortDescription": "NOC project rules, safeguards and MCP tools.",
+    "longDescription": "Packages the team-standard rules, terminology constraints, verification commands and approved local MCP server for the telecom Network Operations assignment.",
+    "developerName": "Telecom NOC Analytics Team",
+    "category": "Productivity",
+    "capabilities": [
+      "skills",
+      "mcp",
+      "scripts"
+    ],
+    "defaultPrompt": "Use the Team NOC Ops standards. Preserve project terminology, verify with focused commands, and use the approved local MCP server for live network evidence."
+  },
+  "mcpServers": "./.mcp.json"
+}

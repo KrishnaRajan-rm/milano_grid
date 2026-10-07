@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "telecom-noc": {
+      "command": "python",
+      "args": [
+        "C:\\GraddedAssignment\\cp\\cp12_mcp_server.py"
+      ],
+      "env": {
+        "NOC_API_BASE_URL": "http://127.0.0.1:8000"
+      }
+    }
+  },
+  "demoQuestions": [
+    "Which grids have the highest anomaly scores?",
+    "Check whether their data pipeline completed successfully."
+  ],
+  "notes": [
+    "Start the existing FastAPI backend first: uvicorn mainapi:app --reload from the fastapi folder.",
+    "The MCP server wraps API1-API6 and does not directly query MySQL, Parquet or GeoJSON.",
+    "Validation limits grid_id to 1-10000 and limits result sizes.",
+    "NOC_API_BASE_URL is restricted to local http://127.0.0.1 or localhost."
+  ]
+}

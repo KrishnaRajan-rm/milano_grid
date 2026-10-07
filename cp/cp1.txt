@@ -1,0 +1,64 @@
+CP - Activity 1: Claude API - Network Insight Generator
+
+Classification: Theory/documentation with an optional API experiment.
+
+Project context
+The telecom project already calculates activity, anomaly and risk information. A Claude API integration would turn a selected grid's structured evidence into a short, operations-friendly explanation. It should explain the evidence; it must not invent a root cause or make an unverified operational decision.
+
+1. Four Claude surfaces in this project
+- Claude chat: interactive browser conversation. Useful for manually discussing an alert or drafting an explanation, but not integrated with the system.
+- Claude API: programmatic interface. This is the correct surface for a Network Insight Generator because the backend can send structured grid evidence and receive structured output.
+- Claude Code: agentic coding tool. It helps developers build, test and maintain the integration; it is not the runtime explanation service.
+- Cowork: workspace assistant for collaborative reports and documents. Useful for operational writeups, but not the application API layer.
+
+2. Evidence object sent to Claude
+Use measured or derived values only. Example:
+{
+  "grid_id": 1234,
+  "timestamp": "2013-11-07T18:00:00",
+  "current_activity": 980.5,
+  "baseline_activity": 500.0,
+  "activity_growth": 0.42,
+  "peak_ratio": 2.1,
+  "variability": 140.2,
+  "anomaly_score": 96.1,
+  "risk_score": 0.78,
+  "risk_level": "high"
+}
+
+3. Required structured answer
+Request JSON in this shape:
+{
+  "severity": "low | medium | high | insufficient_evidence",
+  "evidence_summary": "Brief statement based only on supplied values.",
+  "likely_interpretation": "Cautious operational interpretation, not a diagnosis.",
+  "investigation_steps": ["step 1", "step 2"],
+  "evidence_sufficient": true,
+  "insufficiency_reason": null
+}
+
+Suggested instruction:
+"Use only the supplied evidence. Do not claim a root cause. If values are missing, null, inconsistent or stale, return evidence_sufficient=false and explain what is missing. Return valid JSON only."
+
+4. Model-choice comparison
+- Small/fast model: lowest cost and latency; useful for routine summaries with a strict schema.
+- Mid-tier model: balanced cost, speed and reasoning; best default for operations explanations.
+- Most capable model: stronger reasoning and nuance, but higher cost and latency; use for complex or ambiguous evidence packages.
+
+Choose the model by testing high, medium, low and insufficient-evidence cases. Compare JSON validity, factual grounding, response time and request cost.
+
+5. Short versus richer context experiment
+- Short package: current activity, baseline, growth, peak ratio, variability and anomaly score. Expected result: compact explanation with uncertainty where needed.
+- Rich package: short package plus timestamp, prior-hour activity, recent trend, anomaly reason, data-quality status and known maintenance/event context. Expected result: more specific investigation steps without unsupported causal claims.
+
+Compare the answers for correct use of figures, unsupported assertions, action usefulness, explicit uncertainty, JSON validity, latency and cost.
+
+6. Insufficient-evidence rule
+Claude must explicitly say the evidence is insufficient when important values are missing, null, inconsistent, stale or lack a relevant historical comparison.
+
+Example:
+"evidence_sufficient": false
+"insufficiency_reason": "Baseline activity and data-quality status are missing, so the observed activity cannot be assessed reliably."
+
+Conclusion
+This activity designs an evidence-grounded explanation layer. It is mainly documentation, with a later implementation path through the Claude API when the project needs dashboard or backend integration.

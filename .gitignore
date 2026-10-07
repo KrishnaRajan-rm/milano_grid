@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# VS Code
+.vscode/
+
+# Airflow runtime/generated files
+airflow/airflow.db
+airflow/airflow.db-*
+airflow/logs/
+airflow/simple_auth_manager_passwords.json.generated
+airflow/airflow.cfg
+
+# General logs
+logs/
+
+# Hadoop installation/binaries
+hadoop/
+
+# MySQL Connector source/package
+mysql-connector-j-26.7.0/
+
+# Environment / secrets
+.env
+
+# Generated datasets and Spark outputs
+dataset/output/
+dataset/outputde/
+dataset/landing/
+dataset/landingde/
+dataset/rejectedde/
+dataset/raw/
+*.parquet
+*.crc
+
+# Local Python and model artifacts
+*.joblib
+pyspark/hourly_grid_summary.csv
+
+# Frontend dependencies and build output
+noc-dashboard/node_modules/
+noc-dashboard/dist/

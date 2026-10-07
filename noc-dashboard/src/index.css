@@ -1,0 +1,16 @@
+:root {
+  font-family: "DM Sans", "Segoe UI", sans-serif;
+  color: #29343b;
+  background: #edf0eb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100svh;
+}

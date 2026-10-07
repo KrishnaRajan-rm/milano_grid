@@ -1,0 +1,144 @@
+Yep machi. **ML1 is basically the problem-definition stage** — we are deciding *what exactly the ML model should predict* before writing any model code.
+
+For your telecom project, I'd structure it like this:
+
+### ML1 — Problem Definition
+
+**1. Compare candidate problems**
+
+| Problem            | Meaning                                                                     | Suitability                                                |
+| ------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| High-activity risk | Predict whether a grid will have unusually high activity in the next window | ✅ Good                                                     |
+| Anomalous activity | Predict whether future activity will behave abnormally                      | Good, but anomaly definition can be harder                 |
+| Activity drop      | Predict whether activity will significantly decrease                        | Possible, but less aligned with the investigation use case |
+
+**Primary problem:** **High-activity risk**
+
+---
+
+**2. Prediction unit**
+
+One prediction is for:
+
+> **One grid + one hourly time window**
+
+Example:
+
+```text
+Grid 123
+t = 17:00
+```
+
+The model uses what happened **before/at 17:00** to predict what happens in the **next hour**.
+
+---
+
+**3. Features vs target**
+
+This is the most important part of ML1.
+
+```text
+TRAILING WINDOW                 FUTURE WINDOW
+       ↓                              ↓
+
+t-23 ... t-2 ... t-1 ... t     t+1
+|________________________|      |_____|
+       FEATURES               TARGET
+```
+
+For example:
+
+```text
+Features:
+17:00 and previous 23 hours
+             ↓
+          ML model
+             ↓
+Target:
+18:00 activity risk
+```
+
+So we are **not** saying:
+
+> "17:00 activity is high → label 17:00 as high."
+
+That would just be a threshold detector.
+
+We are saying:
+
+> **"Based on the previous window, will the next hour be high-risk?"**
+
+That's an actual prediction problem.
+
+---
+
+### 4. Target strategy
+
+For the training proxy, we can define:
+
+> **High-risk = future-hour total activity exceeds a specified threshold.**
+
+For example, if your project defines the threshold as the **90th percentile of historical activity**, document it explicitly:
+
+```text
+Target = 1
+if activity at t+1 > 90th percentile threshold
+
+Target = 0
+otherwise
+```
+
+Important: call this a **synthetic/training-proxy label**, not a ground-truth business label.
+
+---
+
+### 5. Business action
+
+The model should **never say:**
+
+> "The network is congested."
+
+Instead:
+
+> **"Investigate grid 123."**
+
+The ML output is a **risk signal for investigation**, not proof that congestion exists.
+
+---
+
+### 6. Data leakage risks
+
+The main danger is accidentally allowing future information into the features.
+
+For example:
+
+❌ Wrong:
+
+```text
+Features → t+1 activity
+Target   → t+1 activity
+```
+
+The model would already know the answer.
+
+Correct:
+
+```text
+Features → t-23 ... t
+Target   → t+1
+```
+
+This `t / t+1` boundary prevents leakage because **the feature window ends before the period being predicted begins**.
+
+Other leakage risks:
+
+* Using future activity statistics when calculating current features.
+* Creating normalization/threshold values using future data.
+* Including the target-hour activity in the feature calculation.
+* Randomly splitting time-series records in a way that allows future observations to influence training.
+
+### The one-line ML1 definition
+
+> **Predict whether a grid will experience high activity in the next hourly window using only activity information from the trailing window, with the prediction used to trigger investigation rather than declare network congestion.**
+
+That is the core of your **ML1**.
